@@ -1,0 +1,55 @@
+{% extends 'hospital/base.html' %}
+
+{% block title %}My Patients - Hospital Information System{% endblock %}
+
+{% block content %}
+<div class="container mt-5 mb-5">
+    <div class="row">
+        <div class="col-md-12">
+            <div class="card">
+                <div class="card-header bg-primary text-white">
+                    <h4 class="mb-0"><i class="bi bi-people"></i> My Patients</h4>
+                </div>
+                <div class="card-body">
+                    <div class="mb-3">
+                        <a href="{% url 'hospital:doctor_dashboard' %}" class="btn btn-secondary">Back to Dashboard</a>
+                    </div>
+                    
+                    {% if patients %}
+                        <div class="table-responsive">
+                            <table class="table table-striped">
+                                <thead>
+                                    <tr>
+                                        <th>Patient Name</th>
+                                        <th>Patient ID</th>
+                                        <th>Phone</th>
+                                        <th>Blood Type</th>
+                                        <th>Actions</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {% for patient in patients %}
+                                        <tr>
+                                            <td>{{ patient.user.first_name }} {{ patient.user.last_name }}</td>
+                                            <td>{{ patient.patient_number }}</td>
+                                            <td>{{ patient.phone }}</td>
+                                            <td><span class="badge bg-secondary">{{ patient.blood_type }}</span></td>
+                                            <td>
+                                                <a href="{% url 'hospital:patient_detail' patient.pk %}" class="btn btn-sm btn-info">View Profile</a>
+                                            </td>
+                                        </tr>
+                                    {% endfor %}
+                                </tbody>
+                            </table>
+                        </div>
+                    {% else %}
+                        <div class="alert alert-info">
+                            <p>You don't have any patients yet.</p>
+                        </div>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

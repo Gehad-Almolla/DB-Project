@@ -1,0 +1,48 @@
+{% extends 'hospital/base.html' %}
+
+{% block title %}Doctor Details - Hospital Information System{% endblock %}
+
+{% block content %}
+<div class="container mt-5 mb-5">
+    <div class="row justify-content-center">
+        <div class="col-md-8">
+            <div class="card">
+                <div class="card-body">
+                    <div class="row mb-4">
+                        <div class="col-md-4 text-center">
+                            {% if doctor.profile_photo %}
+                                <img src="{{ doctor.profile_photo.url }}" alt="Doctor" class="img-fluid rounded-circle mb-3" style="max-width: 200px;">
+                            {% else %}
+                                <div class="bg-light rounded-circle p-5 mb-3" style="width: 200px; height: 200px; margin: 0 auto;">
+                                    <i class="bi bi-person-badge" style="font-size: 4rem;"></i>
+                                </div>
+                            {% endif %}
+                            <h3>Dr. {{ doctor.user.first_name }} {{ doctor.user.last_name }}</h3>
+                            <p class="text-muted">{{ doctor.get_specialty_display }}</p>
+                        </div>
+                        
+                        <div class="col-md-8">
+                            <h4>Professional Information</h4>
+                            <p><strong>License Number:</strong> {{ doctor.license_number }}</p>
+                            <p><strong>Degree:</strong> {{ doctor.degree }}</p>
+                            <p><strong>Department:</strong> {{ doctor.department.name }}</p>
+                            <p><strong>Office Location:</strong> {{ doctor.office_location }}</p>
+                            <p><strong>Consultation Fee:</strong> ${{ doctor.consultation_fee }}</p>
+                            <p><strong>Rating:</strong> <span class="badge bg-success">{{ doctor.rating }}/5</span></p>
+                        </div>
+                    </div>
+                    
+                    <hr>
+                    
+                    <h4>About</h4>
+                    <p>{{ doctor.bio }}</p>
+                    
+                    <div class="d-grid gap-2 d-md-flex justify-content-md-end mt-4">
+                        <a href="{% url 'hospital:doctors_list' %}" class="btn btn-secondary">Back to Doctors</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

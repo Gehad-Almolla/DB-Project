@@ -1,0 +1,45 @@
+{% extends 'hospital/base.html' %}
+
+{% block title %}My Scans - Hospital Information System{% endblock %}
+
+{% block content %}
+<div class="container mt-5 mb-5">
+    <div class="row">
+        <div class="col-md-12">
+            <div class="card">
+                <div class="card-header bg-primary text-white">
+                    <h4 class="mb-0"><i class="bi bi-file-image"></i> My Scans & Reports</h4>
+                </div>
+                <div class="card-body">
+                    {% if scans %}
+                        <div class="row">
+                            {% for scan in scans %}
+                                <div class="col-md-6 mb-3">
+                                    <div class="card">
+                                        <div class="card-body">
+                                            <h5 class="card-title">{{ scan.get_scan_type_display }}</h5>
+                                            <p class="card-text text-muted">{{ scan.scan_date|date:"M d, Y" }}</p>
+                                            {% if scan.report %}
+                                                <p class="card-text">{{ scan.report|truncatewords:20 }}</p>
+                                            {% endif %}
+                                            {% if scan.scan_file %}
+                                                <a href="{{ scan.scan_file.url }}" class="btn btn-sm btn-primary" target="_blank">
+                                                    <i class="bi bi-download"></i> Download
+                                                </a>
+                                            {% endif %}
+                                        </div>
+                                    </div>
+                                </div>
+                            {% endfor %}
+                        </div>
+                    {% else %}
+                        <div class="alert alert-info">
+                            <p>No scans found.</p>
+                        </div>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

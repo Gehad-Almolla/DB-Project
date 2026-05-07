@@ -1,0 +1,143 @@
+{% extends 'hospital/base.html' %}
+
+{% block title %}Home - Hospital Information System{% endblock %}
+
+{% block content %}
+<!-- Hero Section -->
+<div class="hero-section">
+    <h1><i class="bi bi-hospital"></i> Welcome to Our Hospital</h1>
+    <p>Providing Excellence in Healthcare and Patient Care</p>
+    <p>Surgery Department - State of the Art Medical Facility</p>
+    <div>
+        {% if not user.is_authenticated %}
+            <a href="{% url 'hospital:patient_register' %}" class="btn btn-light btn-lg me-2">Register as Patient</a>
+            <a href="{% url 'hospital:doctor_register' %}" class="btn btn-light btn-lg">Register as Doctor</a>
+        {% else %}
+            <a href="{% url 'hospital:doctors_list' %}" class="btn btn-light btn-lg me-2">Find a Doctor</a>
+            {% if user.patient_profile %}
+                <a href="{% url 'hospital:book_appointment' %}" class="btn btn-light btn-lg">Book Appointment</a>
+            {% endif %}
+        {% endif %}
+    </div>
+</div>
+
+<!-- Statistics -->
+<div class="row mb-4">
+    <div class="col-md-3">
+        <div class="dashboard-card">
+            <h3>{{ total_patients }}</h3>
+            <p><i class="bi bi-person-check"></i> Active Patients</p>
+        </div>
+    </div>
+    <div class="col-md-3">
+        <div class="dashboard-card success">
+            <h3>{{ total_doctors }}</h3>
+            <p><i class="bi bi-person-badge"></i> Specialist Doctors</p>
+        </div>
+    </div>
+    <div class="col-md-3">
+        <div class="dashboard-card info">
+            <h3>{{ total_appointments }}</h3>
+            <p><i class="bi bi-calendar-check"></i> Appointments</p>
+        </div>
+    </div>
+    <div class="col-md-3">
+        <div class="dashboard-card warning">
+            <h3>24/7</h3>
+            <p><i class="bi bi-clock"></i> Emergency Service</p>
+        </div>
+    </div>
+</div>
+
+<!-- Featured Doctors -->
+<div class="container mt-5">
+    <h2 class="mb-4" style="font-weight: 700;"><i class="bi bi-people"></i> Our Specialist Doctors</h2>
+    <div class="row">
+        {% for doctor in featured_doctors %}
+            <div class="col-md-4 mb-4">
+                <div class="card doctor-card">
+                    {% if doctor.profile_photo %}
+                        <img src="{{ doctor.profile_photo.url }}" alt="{{ doctor.user.first_name }}" class="img-fluid">
+                    {% else %}
+                        <div style="width: 150px; height: 150px; background-color: #e9ecef; border-radius: 50%; display: flex; align-items: center; justify-content: center; margin: 0 auto 20px;">
+                            <i class="bi bi-person-circle" style="font-size: 80px; color: #adb5bd;"></i>
+                        </div>
+                    {% endif %}
+                    <div class="card-body">
+                        <h5>Dr. {{ doctor.user.first_name }} {{ doctor.user.last_name }}</h5>
+                        <p class="specialty">{{ doctor.get_specialty_display }}</p>
+                        <div class="rating">
+                            <i class="bi bi-star-fill"></i> {{ doctor.rating }}/5
+                        </div>
+                        <p class="text-muted small">{{ doctor.degree }}</p>
+                        <p class="text-muted small mb-3"><i class="bi bi-geo-alt"></i> {{ doctor.office_location }}</p>
+                        <a href="{% url 'hospital:doctor_detail' doctor.pk %}" class="btn btn-primary btn-sm">View Profile</a>
+                        {% if user.patient_profile %}
+                            <a href="{% url 'hospital:book_appointment' %}?doctor={{ doctor.pk }}" class="btn btn-outline-primary btn-sm">Book Now</a>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+        {% endfor %}
+    </div>
+    <div class="text-center mt-4">
+        <a href="{% url 'hospital:doctors_list' %}" class="btn btn-primary btn-lg">View All Doctors</a>
+    </div>
+</div>
+
+<!-- Services -->
+<div class="container mt-5 mb-5">
+    <h2 class="mb-4" style="font-weight: 700;"><i class="bi bi-heart-pulse"></i> Our Services</h2>
+    <div class="row">
+        <div class="col-md-3 mb-4">
+            <div class="card text-center">
+                <div class="card-body">
+                    <i class="bi bi-calendar" style="font-size: 2rem; color: var(--primary-color);"></i>
+                    <h5 class="card-title mt-3">Easy Scheduling</h5>
+                    <p class="card-text">Book appointments online with our specialist doctors in minutes.</p>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3 mb-4">
+            <div class="card text-center">
+                <div class="card-body">
+                    <i class="bi bi-file-medical" style="font-size: 2rem; color: var(--primary-color);"></i>
+                    <h5 class="card-title mt-3">Medical Records</h5>
+                    <p class="card-text">Secure access to your complete medical history and records.</p>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3 mb-4">
+            <div class="card text-center">
+                <div class="card-body">
+                    <i class="bi bi-prescription2" style="font-size: 2rem; color: var(--primary-color);"></i>
+                    <h5 class="card-title mt-3">Prescriptions</h5>
+                    <p class="card-text">Digital prescriptions and medication management.</p>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3 mb-4">
+            <div class="card text-center">
+                <div class="card-body">
+                    <i class="bi bi-graph-up" style="font-size: 2rem; color: var(--primary-color);"></i>
+                    <h5 class="card-title mt-3">Health Tracking</h5>
+                    <p class="card-text">Monitor your vital signs and health metrics.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Call to Action -->
+<div class="alert alert-info mb-5" style="border-radius: 8px; border: none; padding: 30px;">
+    <div class="row align-items-center">
+        <div class="col-md-8">
+            <h4><i class="bi bi-telephone"></i> Need Immediate Assistance?</h4>
+            <p>Our emergency hotline is available 24/7. Call +1 (800) 123-4567</p>
+        </div>
+        <div class="col-md-4 text-end">
+            <a href="{% url 'hospital:contact_us' %}" class="btn btn-primary btn-lg">Contact Us</a>
+        </div>
+    </div>
+</div>
+{% endblock %}

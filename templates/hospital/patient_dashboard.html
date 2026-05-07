@@ -1,0 +1,172 @@
+{% extends 'hospital/base.html' %}
+
+{% block title %}Patient Dashboard - Hospital Information System{% endblock %}
+
+{% block content %}
+<div class="container-fluid">
+    <div class="row mb-4">
+        <div class="col-12">
+            <h2 style="font-weight: 700;"><i class="bi bi-speedometer2"></i> Patient Dashboard</h2>
+            <p class="text-muted">Welcome back, {{ patient.user.first_name }}!</p>
+        </div>
+    </div>
+
+    <!-- Stats -->
+    <div class="row mb-4">
+        <div class="col-md-3">
+            <div class="dashboard-card">
+                <h3>{{ total_appointments }}</h3>
+                <p><i class="bi bi-calendar"></i> Total Appointments</p>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="dashboard-card success">
+                <h3>{{ upcoming_appointments|length }}</h3>
+                <p><i class="bi bi-clock"></i> Upcoming Appointments</p>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="dashboard-card info">
+                <h3>{{ patient.medical_records|length }}</h3>
+                <p><i class="bi bi-file-medical"></i> Medical Records</p>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="dashboard-card warning">
+                <h3>{{ patient.blood_type }}</h3>
+                <p><i class="bi bi-droplet"></i> Blood Type</p>
+            </div>
+        </div>
+    </div>
+
+    <div class="row">
+        <!-- Upcoming Appointments -->
+        <div class="col-md-6 mb-4">
+            <div class="card">
+                <div class="card-header">
+                    <h5 class="mb-0"><i class="bi bi-calendar-check"></i> Upcoming Appointments</h5>
+                </div>
+                <div class="card-body">
+                    {% if upcoming_appointments %}
+                        <div class="list-group">
+                            {% for apt in upcoming_appointments %}
+                                <a href="{% url 'hospital:appointment_detail' apt.pk %}" class="list-group-item list-group-item-action">
+                                    <div class="d-flex w-100 justify-content-between">
+                                        <h6 class="mb-1">Dr. {{ apt.doctor.user.first_name }} {{ apt.doctor.user.last_name }}</h6>
+                                        <small class="badge bg-success">{{ apt.status }}</small>
+                                    </div>
+                                    <p class="mb-1"><i class="bi bi-calendar"></i> {{ apt.appointment_date }}</p>
+                                    <small>{{ apt.reason_for_visit }}</small>
+                                </a>
+                            {% endfor %}
+                        </div>
+                        <a href="{% url 'hospital:patient_appointments' %}" class="btn btn-primary btn-sm mt-3 w-100">View All Appointments</a>
+                    {% else %}
+                        <p class="text-muted">No upcoming appointments. <a href="{% url 'hospital:book_appointment' %}">Book one now!</a></p>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+
+        <!-- Quick Actions -->
+        <div class="col-md-6 mb-4">
+            <div class="card">
+                <div class="card-header">
+                    <h5 class="mb-0"><i class="bi bi-lightning"></i> Quick Actions</h5>
+                </div>
+                <div class="card-body">
+                    <a href="{% url 'hospital:book_appointment' %}" class="btn btn-primary w-100 mb-2">
+                        <i class="bi bi-calendar-plus"></i> Book New Appointment
+                    </a>
+                    <a href="{% url 'hospital:patient_profile' %}" class="btn btn-outline-primary w-100 mb-2">
+                        <i class="bi bi-person"></i> View My Profile
+                    </a>
+                    <a href="{% url 'hospital:patient_medical_records' %}" class="btn btn-outline-primary w-100 mb-2">
+                        <i class="bi bi-file-medical"></i> Medical Records
+                    </a>
+                    <a href="{% url 'hospital:patient_prescriptions' %}" class="btn btn-outline-primary w-100 mb-2">
+                        <i class="bi bi-prescription2"></i> My Prescriptions
+                    </a>
+                    <a href="{% url 'hospital:patient_scans' %}" class="btn btn-outline-primary w-100">
+                        <i class="bi bi-images"></i> My Scans
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Medical Records Preview -->
+    <div class="row">
+        <div class="col-md-12 mb-4">
+            <div class="card">
+                <div class="card-header">
+                    <h5 class="mb-0"><i class="bi bi-graph-up"></i> Recent Medical Records</h5>
+                </div>
+                <div class="card-body">
+                    {% if medical_records %}
+                        <div class="table-responsive">
+                            <table class="table">
+                                <thead>
+                                    <tr>
+                                        <th>Date</th>
+                                        <th>Blood Pressure</th>
+                                        <th>Heart Rate</th>
+                                        <th>Temperature</th>
+                                        <th>Weight</th>
+                                        <th>Height</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {% for record in medical_records %}
+                                        <tr>
+                                            <td>{{ record.record_date|date:"Y-m-d H:i" }}</td>
+                                            <td>{{ record.blood_pressure }}</td>
+                                            <td>{{ record.heart_rate }} bpm</td>
+                                            <td>{{ record.temperature }}°C</td>
+                                            <td>{{ record.weight }} kg</td>
+                                            <td>{{ record.height }} cm</td>
+                                        </tr>
+                                    {% endfor %}
+                                </tbody>
+                            </table>
+                        </div>
+                    {% else %}
+                        <p class="text-muted">No medical records yet.</p>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Patient Info Card -->
+    <div class="row">
+        <div class="col-md-12">
+            <div class="card">
+                <div class="card-header">
+                    <h5 class="mb-0"><i class="bi bi-person-vcard"></i> Your Information</h5>
+                </div>
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col-md-4">
+                            <p><strong>Patient ID:</strong> {{ patient.patient_number }}</p>
+                            <p><strong>Gender:</strong> {{ patient.get_gender_display }}</p>
+                            <p><strong>Blood Type:</strong> {{ patient.blood_type }}</p>
+                        </div>
+                        <div class="col-md-4">
+                            <p><strong>Date of Birth:</strong> {{ patient.birthdate }}</p>
+                            <p><strong>Phone:</strong> {{ patient.phone }}</p>
+                            <p><strong>Admission Date:</strong> {{ patient.admission_date }}</p>
+                        </div>
+                        <div class="col-md-4">
+                            <p><strong>Address:</strong> {{ patient.address }}</p>
+                            <p><strong>Emergency Contact:</strong> {{ patient.emergency_contact }}</p>
+                            <p><strong>Emergency Phone:</strong> {{ patient.emergency_phone }}</p>
+                        </div>
+                    </div>
+                    <a href="{% url 'hospital:patient_profile' %}" class="btn btn-outline-primary btn-sm">Edit Profile</a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

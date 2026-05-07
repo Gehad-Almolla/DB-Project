@@ -1,0 +1,81 @@
+﻿{% extends 'hospital/base.html' %}
+
+{% block title %}Doctor Dashboard - Hospital Information System{% endblock %}
+
+{% block content %}
+<div class="container-fluid">
+    <div class="row mb-4">
+        <div class="col-12">
+            <h2 style="font-weight: 700;"><i class="bi bi-speedometer2"></i> Doctor Dashboard</h2>
+            <p class="text-muted">Welcome back, Dr. {{ doctor.user.first_name }}!</p>
+        </div>
+    </div>
+
+    <div class="row mb-4">
+        <div class="col-md-3">
+            <div class="dashboard-card">
+                <h3>{{ today_appointments|length }}</h3>
+                <p><i class="bi bi-calendar"></i> Today's Appointments</p>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="dashboard-card success">
+                <h3>{{ total_patients }}</h3>
+                <p><i class="bi bi-people"></i> Total Patients</p>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="dashboard-card info">
+                <h3>{{ total_appointments }}</h3>
+                <p><i class="bi bi-calendar-check"></i> Total Appointments</p>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="dashboard-card warning">
+                <h3>{{ doctor.rating }}</h3>
+                <p><i class="bi bi-star"></i> Average Rating</p>
+            </div>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-md-6">
+            <div class="card">
+                <div class="card-header">
+                    <h5><i class="bi bi-calendar-check"></i> Today's Appointments</h5>
+                </div>
+                <div class="card-body">
+                    {% if today_appointments %}
+                        <div class="list-group">
+                            {% for apt in today_appointments %}
+                                <a href="{% url 'hospital:appointment_detail' apt.pk %}" class="list-group-item">
+                                    <strong>{{ apt.patient.user.first_name }} {{ apt.patient.user.last_name }}</strong><br>
+                                    <small>{{ apt.appointment_date|time }}</small> - {{ apt.reason_for_visit }}
+                                </a>
+                            {% endfor %}
+                        </div>
+                    {% else %}
+                        <p class="text-muted">No appointments today.</p>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-6">
+            <div class="card">
+                <div class="card-header">
+                    <h5><i class="bi bi-lightning"></i> Quick Actions</h5>
+                </div>
+                <div class="card-body">
+                    <a href="{% url 'hospital:doctor_appointments' %}" class="btn btn-primary w-100 mb-2">
+                        <i class="bi bi-calendar"></i> View All Appointments
+                    </a>
+                    <a href="{% url 'hospital:doctor_patients' %}" class="btn btn-outline-primary w-100 mb-2">
+                        <i class="bi bi-people"></i> My Patients
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

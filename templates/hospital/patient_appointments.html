@@ -1,0 +1,60 @@
+{% extends 'hospital/base.html' %}
+
+{% block title %}My Appointments - Hospital Information System{% endblock %}
+
+{% block content %}
+<div class="container mt-5 mb-5">
+    <div class="row">
+        <div class="col-md-12">
+            <div class="card">
+                <div class="card-header bg-primary text-white">
+                    <h4 class="mb-0"><i class="bi bi-calendar-event"></i> My Appointments</h4>
+                </div>
+                <div class="card-body">
+                    <div class="mb-3">
+                        <a href="{% url 'hospital:book_appointment' %}" class="btn btn-primary">
+                            <i class="bi bi-plus-circle"></i> Book New Appointment
+                        </a>
+                    </div>
+                    
+                    {% if appointments %}
+                        <div class="table-responsive">
+                            <table class="table table-striped">
+                                <thead>
+                                    <tr>
+                                        <th>Doctor</th>
+                                        <th>Specialty</th>
+                                        <th>Date & Time</th>
+                                        <th>Status</th>
+                                        <th>Actions</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {% for apt in appointments %}
+                                        <tr>
+                                            <td>Dr. {{ apt.doctor.user.first_name }} {{ apt.doctor.user.last_name }}</td>
+                                            <td>{{ apt.doctor.get_specialty_display }}</td>
+                                            <td>{{ apt.appointment_date|date:"M d, Y H:i" }}</td>
+                                            <td><span class="badge bg-info">{{ apt.get_status_display }}</span></td>
+                                            <td>
+                                                <a href="{% url 'hospital:appointment_detail' apt.pk %}" class="btn btn-sm btn-info">View</a>
+                                                {% if apt.status in 'SCHEDULED|CONFIRMED' %}
+                                                    <a href="{% url 'hospital:cancel_appointment' apt.pk %}" class="btn btn-sm btn-danger">Cancel</a>
+                                                {% endif %}
+                                            </td>
+                                        </tr>
+                                    {% endfor %}
+                                </tbody>
+                            </table>
+                        </div>
+                    {% else %}
+                        <div class="alert alert-info">
+                            <p>You don't have any appointments yet. <a href="{% url 'hospital:book_appointment' %}">Book one now!</a></p>
+                        </div>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

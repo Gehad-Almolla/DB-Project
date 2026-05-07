@@ -1,0 +1,55 @@
+﻿{% extends 'hospital/base.html' %}
+
+{% block title %}Doctors List - Hospital Information System{% endblock %}
+
+{% block content %}
+<div class="container-fluid">
+    <h2 class="mb-4" style="font-weight: 700;"><i class="bi bi-people-fill"></i> Our Doctors</h2>
+
+    <div class="row mb-4">
+        <div class="col-md-8">
+            <form method="get" class="form-inline">
+                <div class="input-group w-100">
+                    <input type="text" name="search" class="form-control" placeholder="Search by name or specialization..." value="{{ search }}">
+                    <button class="btn btn-primary" type="submit"><i class="bi bi-search"></i> Search</button>
+                </div>
+            </form>
+        </div>
+        <div class="col-md-4">
+            <select name="specialty" class="form-select" onchange="window.location='?specialty=' + this.value">
+                <option value="">All Specialties</option>
+                {% for code, name in specialties %}
+                    <option value="{{ code }}" {% if code == specialty %}selected{% endif %}>{{ name }}</option>
+                {% endfor %}
+            </select>
+        </div>
+    </div>
+
+    <div class="row">
+        {% for doctor in doctors %}
+            <div class="col-md-4 mb-4">
+                <div class="card doctor-card">
+                    {% if doctor.profile_photo %}
+                        <img src="{{ doctor.profile_photo.url }}" alt="{{ doctor.user.first_name }}">
+                    {% else %}
+                        <div style="width: 100%; height: 200px; background-color: #e9ecef; display: flex; align-items: center; justify-content: center;">
+                            <i class="bi bi-person-circle" style="font-size: 80px; color: #adb5bd;"></i>
+                        </div>
+                    {% endif %}
+                    <div class="card-body">
+                        <h5>Dr. {{ doctor.user.first_name }} {{ doctor.user.last_name }}</h5>
+                        <p class="specialty">{{ doctor.get_specialty_display }}</p>
+                        <div class="rating"><i class="bi bi-star-fill"></i> {{ doctor.rating }}/5</div>
+                        <p class="text-muted small">{{ doctor.degree }}</p>
+                        <a href="{% url 'hospital:doctor_detail' doctor.pk %}" class="btn btn-primary btn-sm w-100">View Profile</a>
+                    </div>
+                </div>
+            </div>
+        {% empty %}
+            <div class="col-12">
+                <p class="alert alert-info">No doctors found matching your criteria.</p>
+            </div>
+        {% endfor %}
+    </div>
+</div>
+{% endblock %}
