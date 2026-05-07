@@ -1,10 +1,10 @@
-# 🏥 Hospital Information System (HIS) - Surgery Department
+# Hospital Information System (HIS) - Surgery Department
 
 A complete, production-ready Django-based Hospital Information System for managing patients, doctors, appointments, medical records, and hospital operations.
 
-## ✨ Features
+## Features
 
-### 👥 For Patients
+### For Patients
 - ✅ Easy registration and profile setup
 - ✅ Browse available doctors by specialty
 - ✅ Book and manage appointments
@@ -14,7 +14,7 @@ A complete, production-ready Django-based Hospital Information System for managi
 - ✅ View medical scans (X-Ray, MRI, CT, etc.)
 - ✅ Profile management
 
-### 👨‍⚕️ For Doctors
+### For Doctors
 - ✅ Professional registration with credentials
 - ✅ Manage patient appointments
 - ✅ View assigned patients
@@ -24,7 +24,7 @@ A complete, production-ready Django-based Hospital Information System for managi
 - ✅ Track patient history
 - ✅ View ratings and reviews
 
-## 🚀 Quick Start
+## Quick Start
 
 ```powershell
 cd "d:\UNI\Database Systems\DB_Project\DB-Project"
@@ -41,7 +41,7 @@ Then visit: http://localhost:8000/
 See **RUN_INSTRUCTIONS.md** for detailed setup guide.
 See **PROJECT_SUMMARY.md** for complete features overview.
 
-## 📱 Access Points
+## Access Points
 
 - **Home**: http://localhost:8000/
 - **Patient Register**: http://localhost:8000/patient/register/
@@ -50,17 +50,17 @@ See **PROJECT_SUMMARY.md** for complete features overview.
 - **Doctors List**: http://localhost:8000/doctors/
 - **Admin**: http://localhost:8000/admin/
 
-## 🎨 Stack
+## Stack
 
 - Backend: Django 5.2
 - Database: MySQL
 - Frontend: Bootstrap 5 + HTML/CSS/JS
 - Forms: Django Crispy Forms
 
-## 📁 Documentation
+## Documentation
 
 - `RUN_INSTRUCTIONS.md` - Complete setup & run guide
 - `SETUP_GUIDE.md` - Database configuration
 - `PROJECT_SUMMARY.md` - Features & architecture
 
-**Ready to launch in 5 minutes!** 🚀
+**Ready to launch in 5 minutes!** 
