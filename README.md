@@ -5,24 +5,24 @@ A complete, production-ready Django-based Hospital Information System for managi
 ## Features
 
 ### For Patients
-- ✅ Easy registration and profile setup
-- ✅ Browse available doctors by specialty
-- ✅ Book and manage appointments
-- ✅ Cancel appointments with refunds
-- ✅ Access complete medical records
-- ✅ View prescriptions
-- ✅ View medical scans (X-Ray, MRI, CT, etc.)
-- ✅ Profile management
+- Easy registration and profile setup
+- Browse available doctors by specialty
+- Book and manage appointments
+- Cancel appointments with refunds
+- Access complete medical records
+- View prescriptions
+- View medical scans (X-Ray, MRI, CT, etc.)
+- Profile management
 
 ### For Doctors
-- ✅ Professional registration with credentials
-- ✅ Manage patient appointments
-- ✅ View assigned patients
-- ✅ Record patient medical data
-- ✅ Write and manage prescriptions
-- ✅ Upload patient medical scans
-- ✅ Track patient history
-- ✅ View ratings and reviews
+- Professional registration with credentials
+- Manage patient appointments
+- View assigned patients
+- Record patient medical data
+- Write and manage prescriptions
+- Upload patient medical scans
+- Track patient history
+- View ratings and reviews
 
 ## Quick Start
 
