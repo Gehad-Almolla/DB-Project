@@ -1,0 +1,94 @@
+{% extends 'hospital/base.html' %}
+
+{% block title %}Admin Dashboard - Hospital Information System{% endblock %}
+
+{% block content %}
+<div class="container mt-5 mb-5">
+    <div class="row">
+        <div class="col-md-12">
+            <h2 class="mb-4"><i class="bi bi-graph-up"></i> Admin Dashboard</h2>
+        </div>
+    </div>
+    
+    <div class="row mb-4">
+        <div class="col-md-3">
+            <div class="card text-center">
+                <div class="card-body">
+                    <h3 class="card-title">{{ total_patients }}</h3>
+                    <p class="card-text text-muted">Total Patients</p>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="card text-center">
+                <div class="card-body">
+                    <h3 class="card-title">{{ total_doctors }}</h3>
+                    <p class="card-text text-muted">Total Doctors</p>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="card text-center">
+                <div class="card-body">
+                    <h3 class="card-title">{{ total_appointments }}</h3>
+                    <p class="card-text text-muted">Total Appointments</p>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="card text-center">
+                <div class="card-body">
+                    <h3 class="card-title">${{ total_revenue }}</h3>
+                    <p class="card-text text-muted">Total Revenue</p>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <div class="row">
+        <div class="col-md-12">
+            <div class="card">
+                <div class="card-header">
+                    <h5 class="mb-0">Recent Inquiries <span class="badge bg-danger">{{ pending_inquiries }}</span></h5>
+                </div>
+                <div class="card-body">
+                    {% if recent_inquiries %}
+                        <div class="table-responsive">
+                            <table class="table table-striped">
+                                <thead>
+                                    <tr>
+                                        <th>Name</th>
+                                        <th>Email</th>
+                                        <th>Type</th>
+                                        <th>Date</th>
+                                        <th>Status</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {% for inquiry in recent_inquiries %}
+                                        <tr>
+                                            <td>{{ inquiry.name }}</td>
+                                            <td>{{ inquiry.email }}</td>
+                                            <td>{{ inquiry.get_inquiry_type_display }}</td>
+                                            <td>{{ inquiry.created_at|date:"M d, Y" }}</td>
+                                            <td>
+                                                {% if inquiry.is_responded %}
+                                                    <span class="badge bg-success">Responded</span>
+                                                {% else %}
+                                                    <span class="badge bg-warning">Pending</span>
+                                                {% endif %}
+                                            </td>
+                                        </tr>
+                                    {% endfor %}
+                                </tbody>
+                            </table>
+                        </div>
+                    {% else %}
+                        <p class="text-muted">No inquiries.</p>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

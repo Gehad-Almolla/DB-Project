@@ -26,6 +26,49 @@ class PatientRegistrationForm(UserCreationForm):
         super().__init__(*args, **kwargs)
         self.fields['password1'].widget.attrs.update({'class': 'form-control'})
         self.fields['password2'].widget.attrs.update({'class': 'form-control'})
+    
+    def save(self, commit=True):
+        user = super().save(commit=False)
+        # Use email as username when possible; fall back to first+last, ensure uniqueness
+        base_username = (self.cleaned_data.get('email') or '').split('@')[0] or (
+            (self.cleaned_data.get('first_name') or '') + (self.cleaned_data.get('last_name') or '')
+        )
+        base_username = base_username.strip() or 'user'
+        username = base_username
+        from django.contrib.auth.models import User
+        counter = 0
+        while User.objects.filter(username=username).exists():
+            counter += 1
+            username = f"{base_username}{counter}"
+
+        user.username = username
+        user.first_name = self.cleaned_data.get('first_name', '')
+        user.last_name = self.cleaned_data.get('last_name', '')
+        user.email = self.cleaned_data.get('email', '')
+        if commit:
+            user.save()
+        return user
+    
+    def save(self, commit=True):
+        user = super().save(commit=False)
+        base_username = (self.cleaned_data.get('email') or '').split('@')[0] or (
+            (self.cleaned_data.get('first_name') or '') + (self.cleaned_data.get('last_name') or '')
+        )
+        base_username = base_username.strip() or 'user'
+        username = base_username
+        from django.contrib.auth.models import User
+        counter = 0
+        while User.objects.filter(username=username).exists():
+            counter += 1
+            username = f"{base_username}{counter}"
+
+        user.username = username
+        user.first_name = self.cleaned_data.get('first_name', '')
+        user.last_name = self.cleaned_data.get('last_name', '')
+        user.email = self.cleaned_data.get('email', '')
+        if commit:
+            user.save()
+        return user
 
 
 class PatientProfileForm(forms.ModelForm):
@@ -48,6 +91,40 @@ class PatientProfileForm(forms.ModelForm):
             'emergency_phone': forms.TextInput(attrs={'class': 'form-control'}),
             'profile_photo': forms.FileInput(attrs={'class': 'form-control'}),
         }
+    
+    def clean_patient_number(self):
+        patient_number = self.cleaned_data.get('patient_number', '').strip()
+        if not patient_number:
+            # Auto-generate patient number
+            import uuid
+            patient_number = f"PAT-{uuid.uuid4().hex[:8].upper()}"
+        
+        # Check uniqueness
+        existing = Patient.objects.filter(patient_number=patient_number)
+        if self.instance and self.instance.pk:
+            existing = existing.exclude(pk=self.instance.pk)
+        
+        if existing.exists():
+            raise forms.ValidationError("This patient number already exists. Please enter a unique one.")
+        
+        return patient_number
+    
+    def clean_social_security_number(self):
+        ssn = self.cleaned_data.get('social_security_number', '').strip()
+        if not ssn:
+            # Auto-generate SSN-like identifier
+            import uuid
+            ssn = f"SSN-{uuid.uuid4().hex[:8].upper()}"
+        
+        # Check uniqueness
+        existing = Patient.objects.filter(social_security_number=ssn)
+        if self.instance and self.instance.pk:
+            existing = existing.exclude(pk=self.instance.pk)
+        
+        if existing.exists():
+            raise forms.ValidationError("This social security number already exists.")
+        
+        return ssn
 
 
 class DoctorRegistrationForm(UserCreationForm):
@@ -86,6 +163,40 @@ class DoctorProfileForm(forms.ModelForm):
             'qualification_document': forms.FileInput(attrs={'class': 'form-control'}),
             'profile_photo': forms.FileInput(attrs={'class': 'form-control'}),
         }
+    
+    def clean_license_number(self):
+        license_number = self.cleaned_data.get('license_number', '').strip()
+        if not license_number:
+            # Auto-generate license number
+            import uuid
+            license_number = f"LIC-{uuid.uuid4().hex[:8].upper()}"
+        
+        # Check uniqueness
+        existing = Doctor.objects.filter(license_number=license_number)
+        if self.instance and self.instance.pk:
+            existing = existing.exclude(pk=self.instance.pk)
+        
+        if existing.exists():
+            raise forms.ValidationError("This license number already exists. Please enter a unique one.")
+        
+        return license_number
+    
+    def clean_social_security_number(self):
+        ssn = self.cleaned_data.get('social_security_number', '').strip()
+        if not ssn:
+            # Auto-generate SSN-like identifier
+            import uuid
+            ssn = f"SSN-{uuid.uuid4().hex[:8].upper()}"
+        
+        # Check uniqueness
+        existing = Doctor.objects.filter(social_security_number=ssn)
+        if self.instance and self.instance.pk:
+            existing = existing.exclude(pk=self.instance.pk)
+        
+        if existing.exists():
+            raise forms.ValidationError("This social security number already exists.")
+        
+        return ssn
 
 
 class AppointmentForm(forms.ModelForm):

@@ -370,12 +370,12 @@
                                 <i class="bi bi-person-circle"></i> {{ user.first_name|default:"Account" }}
                             </a>
                             <ul class="dropdown-menu" aria-labelledby="userDropdown">
-                                {% if user|has_group:"Patient" or user.patient_profile %}
+                                {% if user.is_authenticated and user.patient_profile %}
                                     <li><a class="dropdown-item" href="{% url 'hospital:patient_dashboard' %}">Patient Dashboard</a></li>
                                     <li><a class="dropdown-item" href="{% url 'hospital:patient_profile' %}">My Profile</a></li>
                                     <li><a class="dropdown-item" href="{% url 'hospital:patient_appointments' %}">My Appointments</a></li>
                                     <li><hr class="dropdown-divider"></li>
-                                {% elif user|has_group:"Doctor" or user.doctor_profile %}
+                                {% elif user.is_authenticated and user.doctor_profile %}
                                     <li><a class="dropdown-item" href="{% url 'hospital:doctor_dashboard' %}">Doctor Dashboard</a></li>
                                     <li><a class="dropdown-item" href="{% url 'hospital:doctor_appointments' %}">My Appointments</a></li>
                                     <li><a class="dropdown-item" href="{% url 'hospital:doctor_patients' %}">My Patients</a></li>

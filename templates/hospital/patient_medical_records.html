@@ -1,0 +1,53 @@
+{% extends 'hospital/base.html' %}
+
+{% block title %}Medical Records - Hospital Information System{% endblock %}
+
+{% block content %}
+<div class="container mt-5 mb-5">
+    <div class="row">
+        <div class="col-md-12">
+            <div class="card">
+                <div class="card-header bg-primary text-white">
+                    <h4 class="mb-0"><i class="bi bi-file-medical"></i> Medical Records</h4>
+                </div>
+                <div class="card-body">
+                    {% if records %}
+                        <div class="table-responsive">
+                            <table class="table table-striped">
+                                <thead>
+                                    <tr>
+                                        <th>Date</th>
+                                        <th>Blood Pressure</th>
+                                        <th>Heart Rate</th>
+                                        <th>Temperature</th>
+                                        <th>Weight</th>
+                                        <th>Height</th>
+                                        <th>Notes</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {% for record in records %}
+                                        <tr>
+                                            <td>{{ record.record_date|date:"M d, Y H:i" }}</td>
+                                            <td>{{ record.blood_pressure }}</td>
+                                            <td>{{ record.heart_rate }} bpm</td>
+                                            <td>{{ record.temperature }}°C</td>
+                                            <td>{{ record.weight }} kg</td>
+                                            <td>{{ record.height }} cm</td>
+                                            <td>{{ record.notes|truncatewords:10 }}</td>
+                                        </tr>
+                                    {% endfor %}
+                                </tbody>
+                            </table>
+                        </div>
+                    {% else %}
+                        <div class="alert alert-info">
+                            <p>No medical records found.</p>
+                        </div>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

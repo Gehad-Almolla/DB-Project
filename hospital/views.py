@@ -44,7 +44,7 @@ def patient_register(request):
             user = form.save()
             login(request, user)
             messages.success(request, 'Registration successful! Please complete your profile.')
-            return redirect('patient_profile_setup')
+            return redirect('hospital:patient_profile_setup')
         else:
             for field, errors in form.errors.items():
                 for error in errors:
@@ -63,7 +63,7 @@ def doctor_register(request):
             user = form.save()
             login(request, user)
             messages.success(request, 'Registration successful! Please complete your profile.')
-            return redirect('doctor_profile_setup')
+            return redirect('hospital:doctor_profile_setup')
         else:
             for field, errors in form.errors.items():
                 for error in errors:
@@ -85,11 +85,11 @@ def login_view(request):
             login(request, user)
             # Redirect to appropriate dashboard
             if hasattr(user, 'patient_profile'):
-                return redirect('patient_dashboard')
+                return redirect('hospital:patient_dashboard')
             elif hasattr(user, 'doctor_profile'):
-                return redirect('doctor_dashboard')
+                return redirect('hospital:doctor_dashboard')
             else:
-                return redirect('home')
+                return redirect('hospital:home')
         else:
             messages.error(request, 'Invalid username or password.')
     
@@ -101,7 +101,7 @@ def logout_view(request):
     """Logout View"""
     logout(request)
     messages.success(request, 'You have been logged out.')
-    return redirect('home')
+    return redirect('hospital:home')
 
 
 # ============== PATIENT VIEWS ==============
@@ -111,7 +111,7 @@ def patient_profile_setup(request):
     """Complete Patient Profile After Registration"""
     try:
         patient = request.user.patient_profile
-        return redirect('patient_dashboard')
+        return redirect('hospital:patient_dashboard')
     except Patient.DoesNotExist:
         if request.method == 'POST':
             form = PatientProfileForm(request.POST, request.FILES)
@@ -120,7 +120,7 @@ def patient_profile_setup(request):
                 patient.user = request.user
                 patient.save()
                 messages.success(request, 'Profile setup completed!')
-                return redirect('patient_dashboard')
+                return redirect('hospital:patient_dashboard')
         else:
             form = PatientProfileForm()
         
@@ -132,7 +132,7 @@ def patient_dashboard(request):
     """Patient Dashboard"""
     if not hasattr(request.user, 'patient_profile'):
         messages.error(request, 'Access denied.')
-        return redirect('home')
+        return redirect('hospital:home')
     
     patient = request.user.patient_profile
     upcoming_appointments = patient.appointments.filter(
@@ -159,7 +159,7 @@ def book_appointment(request):
     """Book Appointment"""
     if not hasattr(request.user, 'patient_profile'):
         messages.error(request, 'Access denied.')
-        return redirect('home')
+        return redirect('hospital:home')
     
     if request.method == 'POST':
         form = AppointmentForm(request.POST)
@@ -169,7 +169,7 @@ def book_appointment(request):
             appointment.cost = appointment.doctor.consultation_fee
             appointment.save()
             messages.success(request, 'Appointment booked successfully!')
-            return redirect('patient_appointments')
+            return redirect('hospital:patient_appointments')
     else:
         form = AppointmentForm()
     
@@ -182,7 +182,7 @@ def patient_appointments(request):
     """View Patient Appointments"""
     if not hasattr(request.user, 'patient_profile'):
         messages.error(request, 'Access denied.')
-        return redirect('home')
+        return redirect('hospital:home')
     
     patient = request.user.patient_profile
     status_filter = request.GET.get('status', 'all')
@@ -206,11 +206,11 @@ def cancel_appointment(request, pk):
     
     if appointment.patient.user != request.user:
         messages.error(request, 'Access denied.')
-        return redirect('home')
+        return redirect('hospital:home')
     
     if appointment.status not in ['SCHEDULED', 'CONFIRMED']:
         messages.error(request, 'This appointment cannot be cancelled.')
-        return redirect('patient_appointments')
+        return redirect('hospital:patient_appointments')
     
     if request.method == 'POST':
         form = AppointmentCancellationForm(request.POST)
@@ -219,7 +219,7 @@ def cancel_appointment(request, pk):
             appointment.notes = form.cleaned_data.get('reason', '')
             appointment.save()
             messages.success(request, 'Appointment cancelled successfully.')
-            return redirect('patient_appointments')
+            return redirect('hospital:patient_appointments')
     else:
         form = AppointmentCancellationForm()
     
@@ -231,7 +231,7 @@ def patient_medical_records(request):
     """View Patient Medical Records"""
     if not hasattr(request.user, 'patient_profile'):
         messages.error(request, 'Access denied.')
-        return redirect('home')
+        return redirect('hospital:home')
     
     patient = request.user.patient_profile
     records = patient.medical_records.all().order_by('-record_date')
@@ -245,7 +245,7 @@ def patient_prescriptions(request):
     """View Patient Prescriptions"""
     if not hasattr(request.user, 'patient_profile'):
         messages.error(request, 'Access denied.')
-        return redirect('home')
+        return redirect('hospital:home')
     
     patient = request.user.patient_profile
     prescriptions = patient.prescriptions.all().order_by('-prescription_date')
@@ -259,7 +259,7 @@ def patient_scans(request):
     """View Patient Scans"""
     if not hasattr(request.user, 'patient_profile'):
         messages.error(request, 'Access denied.')
-        return redirect('home')
+        return redirect('hospital:home')
     
     patient = request.user.patient_profile
     scans = patient.scans.all().order_by('-scan_date')
@@ -273,7 +273,7 @@ def patient_profile(request):
     """View/Edit Patient Profile"""
     if not hasattr(request.user, 'patient_profile'):
         messages.error(request, 'Access denied.')
-        return redirect('home')
+        return redirect('hospital:home')
     
     patient = request.user.patient_profile
     
@@ -285,7 +285,7 @@ def patient_profile(request):
             user_form.save()
             patient_form.save()
             messages.success(request, 'Profile updated successfully!')
-            return redirect('patient_profile')
+            return redirect('hospital:patient_profile')
     else:
         user_form = UserUpdateForm(instance=request.user)
         patient_form = PatientProfileForm(instance=patient)
@@ -301,7 +301,7 @@ def doctor_profile_setup(request):
     """Complete Doctor Profile After Registration"""
     try:
         doctor = request.user.doctor_profile
-        return redirect('doctor_dashboard')
+        return redirect('hospital:doctor_dashboard')
     except Doctor.DoesNotExist:
         if request.method == 'POST':
             form = DoctorProfileForm(request.POST, request.FILES)
@@ -310,7 +310,7 @@ def doctor_profile_setup(request):
                 doctor.user = request.user
                 doctor.save()
                 messages.success(request, 'Profile setup completed!')
-                return redirect('doctor_dashboard')
+                return redirect('hospital:doctor_dashboard')
         else:
             form = DoctorProfileForm()
         
@@ -322,7 +322,7 @@ def doctor_dashboard(request):
     """Doctor Dashboard"""
     if not hasattr(request.user, 'doctor_profile'):
         messages.error(request, 'Access denied.')
-        return redirect('home')
+        return redirect('hospital:home')
     
     doctor = request.user.doctor_profile
     today = timezone.now().date()
@@ -352,7 +352,7 @@ def doctor_appointments(request):
     """View Doctor's Appointments"""
     if not hasattr(request.user, 'doctor_profile'):
         messages.error(request, 'Access denied.')
-        return redirect('home')
+        return redirect('hospital:home')
     
     doctor = request.user.doctor_profile
     status_filter = request.GET.get('status', 'all')
@@ -374,7 +374,7 @@ def doctor_patients(request):
     """View Doctor's Patients"""
     if not hasattr(request.user, 'doctor_profile'):
         messages.error(request, 'Access denied.')
-        return redirect('home')
+        return redirect('hospital:home')
     
     doctor = request.user.doctor_profile
     patients = Patient.objects.filter(
@@ -390,7 +390,7 @@ def patient_detail(request, pk):
     """View Patient Details (Doctor View)"""
     if not hasattr(request.user, 'doctor_profile'):
         messages.error(request, 'Access denied.')
-        return redirect('home')
+        return redirect('hospital:home')
     
     patient = get_object_or_404(Patient, pk=pk)
     doctor = request.user.doctor_profile
@@ -398,7 +398,7 @@ def patient_detail(request, pk):
     # Verify doctor has appointments with this patient
     if not doctor.appointments.filter(patient=patient).exists():
         messages.error(request, 'Access denied.')
-        return redirect('doctor_patients')
+        return redirect('hospital:doctor_patients')
     
     medical_records = patient.medical_records.all().order_by('-record_date')
     prescriptions = patient.prescriptions.filter(doctor=doctor).order_by('-prescription_date')
@@ -418,7 +418,7 @@ def add_medical_record(request, patient_pk):
     """Add Medical Record (Doctor)"""
     if not hasattr(request.user, 'doctor_profile'):
         messages.error(request, 'Access denied.')
-        return redirect('home')
+        return redirect('hospital:home')
     
     patient = get_object_or_404(Patient, pk=patient_pk)
     doctor = request.user.doctor_profile
@@ -431,7 +431,7 @@ def add_medical_record(request, patient_pk):
             record.recorded_by = doctor
             record.save()
             messages.success(request, 'Medical record added successfully!')
-            return redirect('patient_detail', pk=patient.pk)
+            return redirect('hospital:patient_detail', pk=patient.pk)
     else:
         form = MedicalRecordForm()
     
@@ -443,7 +443,7 @@ def add_prescription(request, patient_pk):
     """Add Prescription (Doctor)"""
     if not hasattr(request.user, 'doctor_profile'):
         messages.error(request, 'Access denied.')
-        return redirect('home')
+        return redirect('hospital:home')
     
     patient = get_object_or_404(Patient, pk=patient_pk)
     doctor = request.user.doctor_profile
@@ -456,7 +456,7 @@ def add_prescription(request, patient_pk):
             prescription.patient = patient
             prescription.save()
             messages.success(request, 'Prescription created successfully!')
-            return redirect('patient_detail', pk=patient.pk)
+            return redirect('hospital:patient_detail', pk=patient.pk)
     else:
         form = PrescriptionForm()
     
@@ -468,7 +468,7 @@ def upload_scan(request, patient_pk):
     """Upload Patient Scan (Doctor)"""
     if not hasattr(request.user, 'doctor_profile'):
         messages.error(request, 'Access denied.')
-        return redirect('home')
+        return redirect('hospital:home')
     
     patient = get_object_or_404(Patient, pk=patient_pk)
     doctor = request.user.doctor_profile
@@ -481,7 +481,7 @@ def upload_scan(request, patient_pk):
             scan.doctor = doctor
             scan.save()
             messages.success(request, 'Scan uploaded successfully!')
-            return redirect('patient_detail', pk=patient.pk)
+            return redirect('hospital:patient_detail', pk=patient.pk)
     else:
         form = ScanDocumentForm()
     
@@ -532,7 +532,7 @@ def contact_us(request):
         if form.is_valid():
             form.save()
             messages.success(request, 'Your inquiry has been submitted. We will contact you soon.')
-            return redirect('home')
+            return redirect('hospital:home')
     else:
         form = ContactInquiryForm()
     
@@ -553,7 +553,7 @@ def admin_dashboard(request):
     """Admin Dashboard"""
     if not request.user.is_staff:
         messages.error(request, 'Access denied.')
-        return redirect('home')
+        return redirect('hospital:home')
     
     context = {
         'total_patients': Patient.objects.count(),
@@ -578,7 +578,7 @@ def appointment_detail(request, pk):
     
     if not (is_patient or is_doctor or is_staff):
         messages.error(request, 'Access denied.')
-        return redirect('home')
+        return redirect('hospital:home')
     
     context = {'appointment': appointment}
     return render(request, 'hospital/appointment_detail.html', context)

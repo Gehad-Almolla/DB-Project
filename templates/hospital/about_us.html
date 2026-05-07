@@ -1,0 +1,95 @@
+{% extends 'hospital/base.html' %}
+
+{% block title %}About Us - Hospital Information System{% endblock %}
+
+{% block content %}
+<div class="container mt-5 mb-5">
+    <div class="row justify-content-center">
+        <div class="col-md-10">
+            <div class="card">
+                <div class="card-header bg-primary text-white">
+                    <h4 class="mb-0"><i class="bi bi-hospital"></i> About Our Hospital</h4>
+                </div>
+                <div class="card-body">
+                    <div class="row mb-4">
+                        <div class="col-md-8">
+                            <h4>{{ department.name }}</h4>
+                            <p class="text-muted">Department Code: {{ department.department_code }}</p>
+                            <h5 class="mt-4">About the Department</h5>
+                            <p>Our {{ department.name }} is one of the leading surgical departments in the region. We provide comprehensive surgical care with state-of-the-art facilities and highly trained medical professionals.</p>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="card bg-light">
+                                <div class="card-body">
+                                    <h5 class="card-title">Department Contact</h5>
+                                    <p><strong>Phone:</strong> {{ department.contact_number }}</p>
+                                    <p><strong>Location:</strong> {{ department.location }}</p>
+                                    <p><strong>Established:</strong> {{ department.established_date|date:"Y" }}</p>
+                                    {% if department.chairman %}
+                                        <p><strong>Chairman:</strong> Dr. {{ department.chairman.user.first_name }} {{ department.chairman.user.last_name }}</p>
+                                    {% endif %}
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <hr>
+                    
+                    <h4>Our Services</h4>
+                    <ul>
+                        <li>General Surgery</li>
+                        <li>Orthopedic Surgery</li>
+                        <li>Cardiac Surgery</li>
+                        <li>Neurosurgery</li>
+                        <li>Vascular Surgery</li>
+                        <li>24/7 Emergency Services</li>
+                    </ul>
+                    
+                    <hr>
+                    
+                    <h4>Why Choose Us</h4>
+                    <div class="row">
+                        <div class="col-md-6 mb-3">
+                            <div class="card">
+                                <div class="card-body">
+                                    <h5 class="card-title"><i class="bi bi-shield-check"></i> Expert Medical Team</h5>
+                                    <p>Our surgeons and medical staff are highly qualified and experienced in their fields.</p>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <div class="card">
+                                <div class="card-body">
+                                    <h5 class="card-title"><i class="bi bi-gear"></i> Advanced Technology</h5>
+                                    <p>We use the latest medical technology and equipment for accurate diagnosis and treatment.</p>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <div class="card">
+                                <div class="card-body">
+                                    <h5 class="card-title"><i class="bi bi-heart"></i> Patient Care</h5>
+                                    <p>Patient safety and comfort are our top priorities throughout the treatment journey.</p>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <div class="card">
+                                <div class="card-body">
+                                    <h5 class="card-title"><i class="bi bi-clock"></i> 24/7 Available</h5>
+                                    <p>Our emergency services are available round the clock for urgent medical needs.</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="d-grid gap-2 d-md-flex justify-content-md-end mt-4">
+                        <a href="{% url 'hospital:home' %}" class="btn btn-secondary">Back to Home</a>
+                        <a href="{% url 'hospital:contact_us' %}" class="btn btn-primary">Contact Us</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

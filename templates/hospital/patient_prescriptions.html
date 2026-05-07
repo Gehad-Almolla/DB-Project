@@ -1,0 +1,51 @@
+{% extends 'hospital/base.html' %}
+
+{% block title %}My Prescriptions - Hospital Information System{% endblock %}
+
+{% block content %}
+<div class="container mt-5 mb-5">
+    <div class="row">
+        <div class="col-md-12">
+            <div class="card">
+                <div class="card-header bg-primary text-white">
+                    <h4 class="mb-0"><i class="bi bi-prescription2"></i> My Prescriptions</h4>
+                </div>
+                <div class="card-body">
+                    {% if prescriptions %}
+                        <div class="table-responsive">
+                            <table class="table table-striped">
+                                <thead>
+                                    <tr>
+                                        <th>Medication</th>
+                                        <th>Dosage</th>
+                                        <th>Frequency</th>
+                                        <th>Start Date</th>
+                                        <th>End Date</th>
+                                        <th>Doctor</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {% for rx in prescriptions %}
+                                        <tr>
+                                            <td>{{ rx.medication_name }}</td>
+                                            <td>{{ rx.dosage }}</td>
+                                            <td>{{ rx.frequency }}</td>
+                                            <td>{{ rx.start_date|date:"M d, Y" }}</td>
+                                            <td>{{ rx.end_date|date:"M d, Y" }}</td>
+                                            <td>Dr. {{ rx.doctor.user.first_name }} {{ rx.doctor.user.last_name }}</td>
+                                        </tr>
+                                    {% endfor %}
+                                </tbody>
+                            </table>
+                        </div>
+                    {% else %}
+                        <div class="alert alert-info">
+                            <p>No prescriptions found.</p>
+                        </div>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
